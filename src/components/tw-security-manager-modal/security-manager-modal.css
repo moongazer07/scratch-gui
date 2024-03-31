@@ -1,39 +1,27 @@
 @import "../../css/colors.css";
 
 .modal-content {
-    width: 400px;
+    width: 440px;
+    margin-top: 25px;
 }
 
 .body {
     background: $ui-white;
-    padding: 1.5rem 2.25rem;
-}
-[theme="dark"] .body {
-    color: $text-primary;
-    background: $ui-primary;
+    padding: 1rem 1.5rem;
 }
 
 .body p {
     margin: 8px 0;
 }
 
-.url {
-    font-family: monospace;
-    user-select: text;
-    word-wrap: break-word;
-}
-.url::before {
-    content: '"';
-}
-.url::after {
-    content: '"';
-}
-
 .buttons {
     display: flex;
-    justify-content: flex-end;
+}
+.buttons :disabled {
+    opacity: 0.8;
 }
 .deny-button, .allow-button {
+    flex-grow: 1;
     font: inherit;
     color: inherit;
     padding: 0.75rem 1rem;
@@ -41,11 +29,11 @@
     border: 1px solid $ui-black-transparent;
     font-weight: 600;
     font-size: 0.85rem;
-    margin: 0 0 0 8px;
 }
 .deny-button {
     background-color: rgb(255, 92, 92);
     color: white;
+    margin-right: 8px;
 }
 .allow-button {
     background-color: #24cd11;

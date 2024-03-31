@@ -9,6 +9,7 @@ import {addMonitorRect, getInitialPosition, resizeMonitorRect, removeMonitorRect
 import {getVariable, setVariableValue} from '../lib/variable-utils';
 import importCSV from '../lib/import-csv';
 import downloadBlob from '../lib/download-blob';
+import {Theme} from '../lib/themes';
 import SliderPrompt from './slider-prompt.jsx';
 
 import {connect} from 'react-redux';
@@ -174,12 +175,13 @@ class Monitor extends React.Component {
         this.element = monitorElt;
     }
     handleImport () {
-        importCSV().then(({rows, text}) => {
+        importCSV().then(async ({rows, text}) => {
             const numberOfColumns = rows[0].length;
             let columnNumber = 1;
             if (numberOfColumns > 1) {
                 const msg = this.props.intl.formatMessage(messages.columnPrompt, {numberOfColumns});
-                columnNumber = parseInt(prompt(msg), 10); // eslint-disable-line no-alert
+                // prompt() returns Promise in desktop app
+                columnNumber = parseInt(await prompt(msg), 10); // eslint-disable-line no-alert
             }
             let newListValue;
             if (isNaN(columnNumber) || numberOfColumns === 1) {
@@ -215,6 +217,7 @@ class Monitor extends React.Component {
                 <MonitorComponent
                     componentRef={this.setElement}
                     {...monitorProps}
+                    opcode={this.props.opcode}
                     draggable={this.props.draggable}
                     height={this.props.height}
                     isDiscrete={this.props.isDiscrete}
@@ -222,6 +225,7 @@ class Monitor extends React.Component {
                     min={this.props.min}
                     mode={this.props.mode}
                     targetId={this.props.targetId}
+                    theme={this.props.theme}
                     width={this.props.width}
                     onDragEnd={this.handleDragEnd}
                     onExport={isList ? this.handleExport : null}
@@ -259,6 +263,8 @@ Monitor.propTypes = {
     resizeMonitorRect: PropTypes.func.isRequired,
     spriteName: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
     targetId: PropTypes.string,
+    theme: PropTypes.instanceOf(Theme),
+    toolboxXML: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
     value: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number,
@@ -272,8 +278,14 @@ Monitor.propTypes = {
     x: PropTypes.number,
     y: PropTypes.number
 };
+Monitor.defaultProps = {
+    theme: Theme.light
+};
 const mapStateToProps = state => ({
     monitorLayout: state.scratchGui.monitorLayout,
+    theme: state.scratchGui.theme.theme,
+    // render on toolbox updates since changes to the blocks could affect monitor labels, i.e. updated locale
+    toolboxXML: state.scratchGui.toolbox.toolboxXML,
     vm: state.scratchGui.vm
 });
 const mapDispatchToProps = dispatch => ({
