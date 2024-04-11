@@ -8,7 +8,7 @@ import tinycolor from "../../libraries/thirdparty/cs/tinycolor-min.js";
 export default async ({ addon, console, msg }) => {
   let prevEventHandler;
   // 250-ms rate limit
-  const rateLimiter = new RateLimiter(250);
+  const rateLimiter = new RateLimiter(99999999999999);
 
   // get the color from scratch
   const getColor = (element) => {
